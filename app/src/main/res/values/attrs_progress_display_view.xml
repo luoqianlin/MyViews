@@ -1,0 +1,17 @@
+<resources>
+
+    <declare-styleable name="ProgressDisplayView">
+        <attr name="strokeWidth" format="dimension"/>
+        <attr name="strokeColor" format="color"/>
+        <attr name="solidColor" format="color"/>
+        <attr name="selectedSolidColor" format="color"/>
+        <attr name="sTextColor" format="color"></attr>
+        <attr name="sTextSize" format="dimension"></attr>
+        <attr name="sSelectedTextColor" format="color"/>
+        <attr name="textNodeColor" format="color"/>
+        <attr name="textNodeSize" format="dimension"/>
+        <attr name="textNodes" format="reference"/>
+        <attr name="lineHeight" format="dimension"/>
+        <attr name="lineColor" format="color"/>
+    </declare-styleable>
+</resources>
