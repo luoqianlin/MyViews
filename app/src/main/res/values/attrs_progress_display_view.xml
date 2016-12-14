@@ -13,5 +13,6 @@
         <attr name="textNodes" format="reference"/>
         <attr name="lineHeight" format="dimension"/>
         <attr name="lineColor" format="color"/>
+        <attr name="circleRadius" format="dimension"/>
     </declare-styleable>
 </resources>

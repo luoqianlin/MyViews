@@ -1,5 +1,4 @@
 package cn.luoqianlin.myviewdemo;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -11,9 +10,14 @@ import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author lql E-mail: 595308107@qq.com
+ * @version 0 创建时间：2016-12-14 下午9:42:43 类说明
+ */
 public class ProgressDisplayView extends View {
     private final String TAG="ProgressDisplyView";
     private List<StepInfo> stepInfos;
@@ -38,6 +42,7 @@ public class ProgressDisplayView extends View {
     private int lineColor;
     private int selectedPos=-1;
     private  int clickedPadd;
+    private int circleRadius;
 
 
     class Circel {
@@ -122,7 +127,7 @@ public class ProgressDisplayView extends View {
         int endY;
         int color;
         int height;
-        void drawMySelf(Canvas canvas,Paint paint){
+        void drawMySelf(Canvas canvas, Paint paint){
             paint.setStrokeWidth(height);
             canvas.drawLine(startX,startY,endX,endY,paint);
         }
@@ -133,7 +138,7 @@ public class ProgressDisplayView extends View {
         float y;
         int color;
         String text;
-        void drawMySelf(Canvas canvas,Paint paint){
+        void drawMySelf(Canvas canvas, Paint paint){
             float textW = paint.measureText(text);
             float x1= x-textW/2;
             float fontHeight = paint.getFontMetrics().descent-paint.getFontMetrics().ascent;
@@ -166,6 +171,18 @@ public class ProgressDisplayView extends View {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,v,getResources().getDisplayMetrics());
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int speMode = MeasureSpec.getMode(heightMeasureSpec);
+        if(speMode == MeasureSpec.AT_MOST) {
+            float fontHeight = textNodePaint.getFontMetrics().bottom-textNodePaint.getFontMetrics().top;
+            int h= (int) Math.ceil (getPaddingTop()+getPaddingBottom()+2* circleRadius+fontHeight);
+            this.setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(h,MeasureSpec.EXACTLY));
+        }
+
+    }
+
     private void init(AttributeSet attrs, int defStyle) {
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ProgressDisplayView, defStyle, 0);
         strokeColor = a.getColor(R.styleable.ProgressDisplayView_strokeColor, 0xff8b8b8b);
@@ -180,6 +197,7 @@ public class ProgressDisplayView extends View {
         textNodeSize=a.getDimensionPixelSize(R.styleable.ProgressDisplayView_textNodeSize, (int) sp2px(14));
         lineHeight=a.getDimensionPixelSize(R.styleable.ProgressDisplayView_lineHeight, (int) dip2px(1));
         lineColor=a.getColor(R.styleable.ProgressDisplayView_lineColor,0xffb8b8b8);
+        circleRadius=a.getDimensionPixelSize(R.styleable.ProgressDisplayView_circleRadius, (int) dip2px(15));
         a.recycle();
         stepInfos = new ArrayList<>();
         for ( CharSequence s : textNodes) {
@@ -204,8 +222,8 @@ public class ProgressDisplayView extends View {
 
         String text;
     }
-    List<Circel>circels=new ArrayList<>();
-    List<Line>lines=new ArrayList<>();
+    List<Circel> circels=new ArrayList<>();
+    List<Line> lines=new ArrayList<>();
     List<Text> texts=new ArrayList<>();
 
     @Override
@@ -222,9 +240,7 @@ public class ProgressDisplayView extends View {
         int contentWidth = getWidth() - paddingLeft - paddingRight;
         int contentHeight = getHeight() - paddingTop - paddingBottom;
 
-        int rr = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15,
-                getContext().getResources().getDisplayMetrics());
-
+        int rr = circleRadius;
         if (stepInfos.size() <= 1) {
             throw new IllegalArgumentException("step size must >0.");
         }
@@ -253,7 +269,7 @@ public class ProgressDisplayView extends View {
                 top=preCircel.topY();
             }
             Circel nextCircel = new Circel(strokeColor, strokeWidth,solidColor, sTextSize, sTextColor);
-            nextCircel.text=String.valueOf(pos);
+            nextCircel.text= String.valueOf(pos);
             nextCircel.radius = rr;
             nextCircel.x = left + rr;
             nextCircel.y = top + rr;
